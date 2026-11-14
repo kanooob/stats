@@ -6,3 +6,10 @@ compatibility_date = "2026-11-14"
 binding = "DB"
 database_name = "stats-db"
 database_id = "e5b66eaa-0350-43b6-840b-1204b8e1a014"
+
+[triggers]
+crons = [
+  "0 8 * * 1",
+  "5 8 1 * *",
+  "10 8 1 1 *"
+]
