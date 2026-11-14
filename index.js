@@ -5,7 +5,7 @@ const WEBHOOKS = {
 };
 
 export default {
-  // 1. Gestion des requêtes HTTP (/ping et /stats)
+  // 1. Gestion des requêtes HTTP de l'application (/ping et /stats)
   async fetch(request, env) {
     const url = new URL(request.url);
 
@@ -60,13 +60,6 @@ export default {
       return Response.json(formatted);
     }
 
-    // Route cachée pour tester manuellement l'envoi Discord (?type=hebdo|mensuel|annuel)
-    if (request.method === "GET" && url.pathname === "/test-recap") {
-      const type = url.searchParams.get("type") || "hebdo";
-      await sendRecap(env, type);
-      return new Response(`Récap ${type} envoyé sur Discord.`);
-    }
-
     return new Response("Not found", { status: 404 });
   },
 
@@ -88,15 +81,12 @@ async function sendRecap(env, type) {
               : type === "mensuel" ? "📅 Récapitulatif Mensuel (30j)" 
               : "🎉 Récapitulatif Annuel (365j)";
 
-  // Récupération de la période actuelle et de la période précédente pour comparer
   const currentStats = await getPeriodStats(env, `-${days} days`, "now");
   const previousStats = await getPeriodStats(env, `-${days * 2} days`, `-${days} days`);
 
-  // Calcul des évolutions
   const pingEvolution = formatEvolution(currentStats.totalPings, previousStats.totalPings);
   const dauEvolution = formatEvolution(currentStats.avgDau, previousStats.avgDau);
 
-  // Formatage des versions (triées par popularité)
   const appVersionsText = formatBreakdown(currentStats.versions, currentStats.totalPings);
   const androidVersionsText = formatBreakdown(currentStats.androidVersions, currentStats.totalPings);
 
@@ -188,7 +178,7 @@ function formatBreakdown(obj, total) {
   if (entries.length === 0) return null;
 
   return entries
-    .slice(0, 6) // Limite aux 6 principales versions pour garder l'embed lisible
+    .slice(0, 6)
     .map(([key, count]) => {
       const pct = total > 0 ? Math.round((count / total) * 100) : 0;
       return `• **${key}** : ${pct}% (${count})`;
