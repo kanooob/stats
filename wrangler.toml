@@ -1,0 +1,8 @@
+name = "mon-app-stats"
+main = "index.js"
+compatibility_date = "2026-11-14"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "stats-db"
+database_id = "e5b66eaa-0350-43b6-840b-1204b8e1a014"
