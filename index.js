@@ -9,7 +9,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    if (request.method === "POST" && url.pathname === "/ping") {
+if ((request.method === "POST" || request.method === "GET") && url.pathname === "/ping") {
       const appVersion = url.searchParams.get("app_v") || "unknown";
       const osVersion = url.searchParams.get("os_v") || "unknown";
       const today = new Date().toISOString().split('T')[0];
